@@ -1,1 +1,1 @@
-# pull-request-action
+# chart-repo-pr-action
