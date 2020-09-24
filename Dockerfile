@@ -4,6 +4,9 @@ FROM alpine
 ## https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
 USER root
 
+RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+  apk add --no-cache git hub
+
 ADD entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]

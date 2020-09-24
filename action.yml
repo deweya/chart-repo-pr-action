@@ -7,3 +7,7 @@ branding:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+inputs:
+  token:
+    description: Token used to push to fork
+    required: true
