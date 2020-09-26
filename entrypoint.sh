@@ -23,15 +23,21 @@ fi
 ## Clone fork
 git clone https://$AUTH_USER:$AUTH_TOKEN@github.com/$FORK_NAME charts-fork
 
-## Push to fork
-## TODO: The pipeline should not fail if no changes are pushed. It should just exit 0 here and not continue to create the PR
+## Push to fork if there are changes to $LOCAL_CHARTS_DIR
+## If there are not any changes to $LOCAL_CHARTS_DIR, the action will end here
 cd charts-fork
 git config user.name $COMMITTER_NAME
 git config user.email $COMMITTER_EMAIL
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
 cp -r ../$LOCAL_CHARTS_DIR/* $UPSTREAM_CHARTS_DIR/
 git add --all
-git commit -m "$COMMIT_MESSAGE"
+## If there are no changes, then exit. Else, commit and push to fork.
+if git diff-index --quiet HEAD; then
+  echo "INFO: no changes detected. Exiting..."
+  exit 0
+else
+  git commit -m "$COMMIT_MESSAGE"
+fi
 git push origin $SOURCE_BRANCH
 
 ## Create PR
