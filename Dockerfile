@@ -5,7 +5,7 @@ FROM alpine
 USER root
 
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-  apk add --no-cache git hub
+  apk add --no-cache git hub github-cli
 
 ADD entrypoint.sh /
 

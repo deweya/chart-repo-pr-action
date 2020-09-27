@@ -44,4 +44,16 @@ git push origin $SOURCE_BRANCH
 ## GITHUB_USER and GITHUB_TOKEN are required for "hub"
 export GITHUB_USER=$COMMITTER_NAME
 export GITHUB_TOKEN=$AUTH_TOKEN
-hub pull-request -b $UPSTREAM_OWNER:$TARGET_BRANCH -h $SOURCE_BRANCH --no-edit
+## Determine if PR already exists
+fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
+fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
+set +e
+gh pr list --state open --base $TARGET_BRANCH --repo $UPSTREAM_OWNER/$fork_repo | grep $fork_owner:$SOURCE_BRANCH
+exit_code=$?
+set -e
+if [ $exit_code -eq 0 ]; then
+  echo "INFO: pr already exists. Exiting..."
+  exit 0
+else
+  hub pull-request -b $UPSTREAM_OWNER:$TARGET_BRANCH -h $SOURCE_BRANCH --no-edit
+fi
