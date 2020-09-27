@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: deweya/chart-repo-pr-action@master
+      - uses: deweya/chart-repo-pr-action@v0.1.0
         with:
           auth_token: ${{ secrets.PAT }}
           fork_name: deweya/helm-charts
