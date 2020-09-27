@@ -55,5 +55,5 @@ if [ $exit_code -eq 0 ]; then
   echo "INFO: pr already exists. Exiting..."
   exit 0
 else
-  hub pull-request -b $UPSTREAM_OWNER:$TARGET_BRANCH -h $SOURCE_BRANCH --no-edit
+  gh pr create --base $TARGET_BRANCH --head $fork_owner:$SOURCE_BRANCH --title "$COMMIT_MESSAGE" --body "Syncing charts from $FORK_NAME" --repo $UPSTREAM_OWNER/$fork_repo
 fi
