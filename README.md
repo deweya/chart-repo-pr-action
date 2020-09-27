@@ -1,5 +1,5 @@
 # chart-repo-pr-action
-This action is used to copy local Helm charts to a central Helm chart repository by submitting a PR to the chart repository. The below diagram depicts the intended usage of this Action.
+This action is used to copy Helm charts to a central Helm chart repository by submitting a PR to the chart repository. The below diagram depicts the intended usage of this Action.
 
 ![Diagram of chart-repo-pr-action](./images/chart-repo-pr-action.png)
 
@@ -9,7 +9,7 @@ You might be interested in this Action if you:
 * Would like to publish your chart(s) to an upstream chart repository
 * Would _not_ like to move your Helm chart out of your repository
 
-This action allows you to sync local Helm charts to an upstream chart repository without requiring you to move or copy your Helm charts manually. It copies your charts to a chart repository fork and makes a PR to the chart repository in an automated and idempotent fashion.
+This action allows you to sync Helm charts in a separate repository to an upstream chart repository without requiring you to move or copy your Helm charts manually. It copies your charts to a chart repository fork and makes a PR to the chart repository in an automated and idempotent fashion.
 
 Interested? Read on to learn how to use this Action.
 
