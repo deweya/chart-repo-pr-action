@@ -41,7 +41,6 @@ fi
 git push origin $SOURCE_BRANCH
 
 ## Create PR
-## GITHUB_USER and GITHUB_TOKEN are required for "hub"
 export GITHUB_USER=$COMMITTER_NAME
 export GITHUB_TOKEN=$AUTH_TOKEN
 ## Determine if PR already exists
