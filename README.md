@@ -20,7 +20,7 @@ In order to use this action, you need to have the following items:
 * A personal access token. See [The auth_token Parameter](#the-auth_token-parameter) section of this doc for more information.
 
 ## Basic Usage
-Below shows the basic usage to include this Action in your workflow.
+Below shows the basic usage to include this Action in your workflow. This action is to be used in your local repo containing the Helm charts you'd like to copy.
 ```yaml
 name: Submit PR to chart repository
 on:
