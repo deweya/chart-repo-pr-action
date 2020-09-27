@@ -15,6 +15,7 @@ Interested? Read on to learn how to use this Action.
 
 ## Prerequisites
 In order to use this action, you need to have the following items:
+* A repository (referred to as the `local` repo) containing Helm charts you'd like to copy to a chart repository (referred to as the `upstream` repo)
 * A fork of the upstream chart repository you'd like to copy your chart to
 * A personal access token. See [The auth_token Parameter](#the-auth_token-parameter) section of this doc for more information.
 
