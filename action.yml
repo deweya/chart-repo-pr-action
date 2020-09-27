@@ -21,11 +21,11 @@ inputs:
     description: Username used for authentication to push to fork. If blank, defaults to the user who triggered the action.
     required: false
   local_charts_dir:
-    description: Local charts directory name
+    description: Charts directory name in local repo
     required: false
     default: charts
   upstream_charts_dir:
-    description: Remote charts directory name
+    description: Charts directory name in upstream repo
     required: false
     default: charts
   committer_name:
