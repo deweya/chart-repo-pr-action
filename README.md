@@ -11,7 +11,12 @@ You might be interested in this Action if you:
 
 This action allows you to sync local Helm charts to an upstream chart repository without requiring you to move or copy your Helm charts manually. It copies your charts to a chart repository fork and makes a PR to the chart repository in an automated and idempotent fashion.
 
-Interested? Read on to learn the basic usage of this Action.
+Interested? Read on to learn how to use this Action.
+
+## Prerequisites
+In order to use this action, you need to have the following items:
+* A fork of the upstream chart repository you'd like to copy your chart to
+* A personal access token. See [The auth_token Parameter](#the-auth_token-parameter) section of this doc for more information.
 
 ## Basic Usage
 Below shows the basic usage to include this Action in your workflow.
