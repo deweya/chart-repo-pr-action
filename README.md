@@ -22,7 +22,10 @@ In order to use this action, you need to have the following items:
 Below shows the basic usage to include this Action in your workflow.
 ```yaml
 name: Submit PR to chart repository
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test-job:
