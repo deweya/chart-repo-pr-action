@@ -41,7 +41,7 @@ fi
 git push origin $SOURCE_BRANCH
 
 ## Create PR
-## GITHUB_USER is required for "hub"
+## GITHUB_USER and GITHUB_TOKEN are required for "hub"
 export GITHUB_USER=$COMMITTER_NAME
 export GITHUB_TOKEN=$AUTH_TOKEN
 hub pull-request -b $UPSTREAM_OWNER:$TARGET_BRANCH -h $SOURCE_BRANCH --no-edit
