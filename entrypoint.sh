@@ -32,7 +32,7 @@ fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
 fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
 
-## Sync fork's TARGET_BRANCH with upstream
+## Sync fork's SOURCE_BRANCH with upstream's TARGET_BRANCH
 git fetch upstream
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
 git reset --hard upstream/$TARGET_BRANCH
