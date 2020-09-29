@@ -21,31 +21,47 @@ if [ ! -d "$LOCAL_CHARTS_DIR" ]; then
 fi
 
 ## Clone fork
+cd ../
 git clone https://$AUTH_USER:$AUTH_TOKEN@github.com/$FORK_NAME charts-fork
-
-## Push to fork if there are changes to $LOCAL_CHARTS_DIR
-## If there are not any changes to $LOCAL_CHARTS_DIR, the action will end here
 cd charts-fork
 git config user.name $COMMITTER_NAME
 git config user.email $COMMITTER_EMAIL
+
+## Update local master to upstream
+fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
+fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
+git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
+git pull upstream master
+
+## Push to fork if there are changes to $LOCAL_CHARTS_DIR
+## If there are not any changes to $LOCAL_CHARTS_DIR, the action will end here
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
-cp -r ../$LOCAL_CHARTS_DIR/* $UPSTREAM_CHARTS_DIR/
+git reset --hard master
+
+cd $GITHUB_WORKSPACE/$LOCAL_CHARTS_DIR
+for chart in */; do
+  rm -rfv ../../charts-fork/$UPSTREAM_CHARTS_DIR/$chart
+  cp -rv $chart ../../charts-fork/$UPSTREAM_CHARTS_DIR/
+done
+
+cd ../../charts-fork
+git status
 git add --all
-## If there are no changes, then exit. Else, commit and push to fork.
-if git diff-index --quiet HEAD; then
-  echo "INFO: no changes detected. Exiting..."
-  exit 0
-else
+exit_early=true
+if ! git diff-index --quiet HEAD; then
   git commit -m "$COMMIT_MESSAGE"
+  exit_early=false
 fi
-git push origin $SOURCE_BRANCH
+git push origin $SOURCE_BRANCH --force
+if [ "$exit_early" = true ]; then
+  echo "INFO: no change detected against target branch. Exiting early..."
+  exit 0
+fi
 
 ## Create PR
 export GITHUB_USER=$COMMITTER_NAME
 export GITHUB_TOKEN=$AUTH_TOKEN
 ## Determine if PR already exists
-fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
-fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 set +e
 gh pr list --state open --base $TARGET_BRANCH --repo $UPSTREAM_OWNER/$fork_repo | grep $fork_owner:$SOURCE_BRANCH
 exit_code=$?
