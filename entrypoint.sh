@@ -31,12 +31,13 @@ git config user.email $COMMITTER_EMAIL
 fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
 fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
-git pull upstream master
+git checkout $TARGET_BRANCH
+git pull upstream $TARGET_BRANCH
 
 ## Push to fork if there are changes to $LOCAL_CHARTS_DIR
 ## If there are not any changes to $LOCAL_CHARTS_DIR, the action will end here
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
-git reset --hard master
+git reset --hard $TARGET_BRANCH
 
 cd $GITHUB_WORKSPACE/$LOCAL_CHARTS_DIR
 for chart in */; do
