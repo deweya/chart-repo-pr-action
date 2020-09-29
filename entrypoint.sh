@@ -33,12 +33,9 @@ fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
 
 ## Sync fork's TARGET_BRANCH with upstream
-git checkout $TARGET_BRANCH
-git pull upstream $TARGET_BRANCH
-
-## Sync fork's SOURCE_BRANCH with TARGET_BRANCH so we get an intended diff
+git fetch upstream
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
-git reset --hard $TARGET_BRANCH
+git reset --hard upstream/$TARGET_BRANCH
 
 ## For each chart in the local repo, remove that chart from the fork and then copy it over
 ## This essentially cleans the fork before trying to create/update the PR
