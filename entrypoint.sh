@@ -27,28 +27,36 @@ cd charts-fork
 git config user.name $COMMITTER_NAME
 git config user.email $COMMITTER_EMAIL
 
-## Update local master to upstream
+## Sync fork with upstream
 fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
 fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
+
+### Sync fork's TARGET_BRANCH with upstream
 git checkout $TARGET_BRANCH
 git pull upstream $TARGET_BRANCH
 
-## Push to fork if there are changes to $LOCAL_CHARTS_DIR
-## If there are not any changes to $LOCAL_CHARTS_DIR, the action will end here
+### Sync fork's SOURCE_BRANCH with TARGET_BRANCH so we get an intended diff
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
 git reset --hard $TARGET_BRANCH
 
+## For each chart in the local repo, remove that chart from the fork and then copy it over
+## This essentially cleans the fork before trying to create/update the PR
 cd $GITHUB_WORKSPACE/$LOCAL_CHARTS_DIR
 for chart in */; do
   rm -rfv ../../charts-fork/$UPSTREAM_CHARTS_DIR/$chart
   cp -rv $chart ../../charts-fork/$UPSTREAM_CHARTS_DIR/
 done
 
+## Add, Commit, and Push
+## git status is here for logging purposes. This might be useful in the early phases of this Action where issues may occur
 cd ../../charts-fork
 git status
 git add --all
 exit_early=true
+## If there aren't any changes, exit early
+## Note that this condition will close PRs that this Action opened previously since GitHub detects that there aren't any changes once we force push
+## I think this is acceptable, however, since this action will automatically open a new PR once new changes are introduced
 if ! git diff-index --quiet HEAD; then
   git commit -m "$COMMIT_MESSAGE"
   exit_early=false
