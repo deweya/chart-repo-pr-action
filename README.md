@@ -76,3 +76,8 @@ ${{ secrets.PAT }}
 ```
 
 Of course, be sure to use a different name other than `PAT` if you gave your secret a different name.
+
+### The `source_branch` Parameter
+One important thing to call out about the `source_branch` parameter is that this action will make a **force push** against this branch. As a result, it is highly recommended that you select a branch that only the action will modify. If you attempt to make changes to this branch, they will be wiped out when this action runs.
+
+The force push is necessary because this action synchronizes your `source_branch` with the upstream's `target_branch` in order to produce an accurate diff. Since it is possible that this will rewrite `source_branch`'s history, this action performs a force push.
