@@ -27,16 +27,16 @@ cd charts-fork
 git config user.name $COMMITTER_NAME
 git config user.email $COMMITTER_EMAIL
 
-## Sync fork with upstream
+## Add upstream
 fork_owner=$(echo $FORK_NAME | cut -d '/' -f1)
 fork_repo=$(echo $FORK_NAME | cut -d '/' -f2)
 git remote add upstream https://github.com/$UPSTREAM_OWNER/$fork_repo
 
-### Sync fork's TARGET_BRANCH with upstream
+## Sync fork's TARGET_BRANCH with upstream
 git checkout $TARGET_BRANCH
 git pull upstream $TARGET_BRANCH
 
-### Sync fork's SOURCE_BRANCH with TARGET_BRANCH so we get an intended diff
+## Sync fork's SOURCE_BRANCH with TARGET_BRANCH so we get an intended diff
 git checkout $SOURCE_BRANCH || git checkout -b $SOURCE_BRANCH
 git reset --hard $TARGET_BRANCH
 
