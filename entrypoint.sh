@@ -24,6 +24,7 @@ fi
 cd ../
 git clone https://$AUTH_USER:$AUTH_TOKEN@github.com/$FORK_NAME charts-fork
 cd charts-fork
+fork_dir=$(pwd)
 git config user.name $COMMITTER_NAME
 git config user.email $COMMITTER_EMAIL
 
@@ -41,13 +42,13 @@ git reset --hard upstream/$TARGET_BRANCH
 ## This essentially cleans the fork before trying to create/update the PR
 cd $GITHUB_WORKSPACE/$LOCAL_CHARTS_DIR
 for chart in */; do
-  rm -rfv ../../charts-fork/$UPSTREAM_CHARTS_DIR/$chart
-  cp -rv $chart ../../charts-fork/$UPSTREAM_CHARTS_DIR/
+  rm -rfv $fork_dir/$UPSTREAM_CHARTS_DIR/$chart
+  cp -rv $chart $fork_dir/$UPSTREAM_CHARTS_DIR/
 done
 
 ## Add, Commit, and Push
 ## git status is here for logging purposes. This might be useful in the early phases of this Action where issues may occur
-cd ../../charts-fork
+cd $fork_dir
 git status
 git add --all
 exit_early=true

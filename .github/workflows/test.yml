@@ -1,0 +1,21 @@
+name: Test Action
+on: push
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out this action so we can test it
+      - uses: actions/checkout@v2
+
+      # Test sample PR with no change to charts
+      - name: No change to charts
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          fork_name: deweya/helm-charts
+          upstream_owner: deweya0
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/no-change
+      - name: Verify no change
+        run: test/verify-no-change.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
