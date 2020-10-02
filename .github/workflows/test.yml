@@ -8,6 +8,10 @@ jobs:
       ## Check out this action so we can test it
       - uses: actions/checkout@v2
 
+      ## Close open PRs from deweya:feat/sync before continuing
+      - name: Close existing PRs
+        run: test/close-prs.sh deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+
       ## Test sample PR with no change to charts
       - name: No change to charts
         uses: ./
@@ -67,4 +71,4 @@ jobs:
           local_charts_dir: test/03-test-adding-new-chart
           target_branch: test-target-branch
       - name: Verify adding a new chart using a different target branch
-        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
+        run: test/verify-pr.sh test-target-branch deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
