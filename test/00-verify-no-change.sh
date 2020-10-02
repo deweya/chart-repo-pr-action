@@ -9,9 +9,9 @@ gh pr list --state open --base $BASE --repo $UPSTREAM_REPO | grep $HEAD
 exit_code=$?
 set -e
 if [ $exit_code -eq 0 ]; then
-  echo "ERR: PR found, but no PR was expected"
+  echo "FAIL: PR found, but no PR was expected"
   exit 1
 else
-  echo "INFO: No PR found. PASS"
+  echo "PASS: No PR found"
   exit 0
 fi

@@ -16,6 +16,18 @@ jobs:
           fork_name: deweya/helm-charts
           upstream_owner: deweya0
           committer_email: deweya964@gmail.com
-          local_charts_dir: test/no-change
+          local_charts_dir: test/00-test-no-change
       - name: Verify no change
-        run: test/verify-no-change.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+        run: test/00-verify-no-change.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+
+      # Test sample PR making a change to an existing chart
+      - name: Test a simple change by updating the replica count in the NGINX values file
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          fork_name: deweya/helm-charts
+          upstream_owner: deweya0
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/01-test-change-to-existing-chart
+      - name: Verify simple change to existing chart (NGINX)
+        run: test/01-verify-change-to-existing-chart.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
