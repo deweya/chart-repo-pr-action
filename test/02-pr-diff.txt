@@ -1,0 +1,60 @@
+diff --git a/charts/nginx/templates/ingress.yaml b/charts/nginx/templates/ingress.yaml
+deleted file mode 100644
+index c90297c..0000000
+--- a/charts/nginx/templates/ingress.yaml
++++ /dev/null
+@@ -1,41 +0,0 @@
+-{{- if .Values.ingress.enabled -}}
+-{{- $fullName := include "nginx.fullname" . -}}
+-{{- $svcPort := .Values.service.port -}}
+-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+-apiVersion: networking.k8s.io/v1beta1
+-{{- else -}}
+-apiVersion: extensions/v1beta1
+-{{- end }}
+-kind: Ingress
+-metadata:
+-  name: {{ $fullName }}
+-  labels:
+-    {{- include "nginx.labels" . | nindent 4 }}
+-  {{- with .Values.ingress.annotations }}
+-  annotations:
+-    {{- toYaml . | nindent 4 }}
+-  {{- end }}
+-spec:
+-  {{- if .Values.ingress.tls }}
+-  tls:
+-    {{- range .Values.ingress.tls }}
+-    - hosts:
+-        {{- range .hosts }}
+-        - {{ . | quote }}
+-        {{- end }}
+-      secretName: {{ .secretName }}
+-    {{- end }}
+-  {{- end }}
+-  rules:
+-    {{- range .Values.ingress.hosts }}
+-    - host: {{ .host | quote }}
+-      http:
+-        paths:
+-          {{- range .paths }}
+-          - path: {{ . }}
+-            backend:
+-              serviceName: {{ $fullName }}
+-              servicePort: {{ $svcPort }}
+-          {{- end }}
+-    {{- end }}
+-  {{- end }}
+diff --git a/charts/nginx/values.yaml b/charts/nginx/values.yaml
+index 06fff70..07c4f62 100644
+--- a/charts/nginx/values.yaml
++++ b/charts/nginx/values.yaml
+@@ -2,7 +2,7 @@
+ # This is a YAML-formatted file.
+ # Declare variables to be passed into your templates.
+ 
+-replicaCount: 1
++replicaCount: 2
+ 
+ image:
+   repository: nginx

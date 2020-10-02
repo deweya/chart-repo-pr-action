@@ -2,13 +2,13 @@ name: Test Action
 on: push
 
 jobs:
-  test-job:
+  test-action:
     runs-on: ubuntu-latest
     steps:
-      # Check out this action so we can test it
+      ## Check out this action so we can test it
       - uses: actions/checkout@v2
 
-      # Test sample PR with no change to charts
+      ## Test sample PR with no change to charts
       - name: No change to charts
         uses: ./
         with:
@@ -20,7 +20,7 @@ jobs:
       - name: Verify no change
         run: test/00-verify-no-change.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
 
-      # Test sample PR making a change to an existing chart
+      ## Test sample PR making a change to an existing chart
       - name: Test a simple change by updating the replica count in the NGINX values file
         uses: ./
         with:
@@ -30,4 +30,16 @@ jobs:
           committer_email: deweya964@gmail.com
           local_charts_dir: test/01-test-change-to-existing-chart
       - name: Verify simple change to existing chart (NGINX)
-        run: test/01-verify-change-to-existing-chart.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 01-pr-diff.txt
+
+      ## Test removing a file from an existing chart
+      - name: Test removing a file from an existing chart
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          fork_name: deweya/helm-charts
+          upstream_owner: deweya0
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/02-test-removing-file-from-existing-chart
+      - name: Verify simple change to existing chart (NGINX)
+        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 02-pr-diff.txt
