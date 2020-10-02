@@ -55,3 +55,16 @@ jobs:
           local_charts_dir: test/03-test-adding-new-chart
       - name: Verify adding a new chart (new-chart)
         run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
+
+      ## Test adding a new chart using a different target branch
+      - name: Test adding a new chart using a different target branch
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          fork_name: deweya/helm-charts
+          upstream_owner: deweya0
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/03-test-adding-new-chart
+          target_branch: test-target-branch
+      - name: Verify adding a new chart using a different target branch
+        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
