@@ -8,67 +8,87 @@ jobs:
       ## Check out this action so we can test it
       - uses: actions/checkout@v2
 
-      ## Close open PRs from deweya:feat/sync before continuing
+      ## Close open PRs from feat/sync (from both the chart repo and forks) before continuing
       - name: Close existing PRs
-        run: test/close-prs.sh deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+        run: test/close-prs.sh deweya0/helm-charts feat/sync ${{ secrets.PAT }}
 
       ## Test sample PR with no change to charts
       - name: No change to charts
         uses: ./
         with:
           auth_token: ${{ secrets.PAT }}
-          fork_name: deweya/helm-charts
-          upstream_owner: deweya0
+          chart_repo: deweya0/helm-charts
           committer_email: deweya964@gmail.com
           local_charts_dir: test/00-test-no-change
       - name: Verify no change
-        run: test/00-verify-no-change.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }}
+        run: test/00-verify-no-change.sh deweya0/helm-charts master feat/sync ${{ secrets.PAT }}
 
       ## Test sample PR making a change to an existing chart
       - name: Test a simple change by updating the replica count in the nginx values file
         uses: ./
         with:
           auth_token: ${{ secrets.PAT }}
-          fork_name: deweya/helm-charts
-          upstream_owner: deweya0
+          chart_repo: deweya0/helm-charts
           committer_email: deweya964@gmail.com
           local_charts_dir: test/01-test-change-to-existing-chart
       - name: Verify simple change to existing chart (nginx)
-        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 01-pr-diff.txt
+        run: test/verify-pr.sh deweya0/helm-charts master feat/sync ${{ secrets.PAT }} 01-pr-diff.txt
 
       ## Test removing a file from an existing chart
       - name: Test removing a file from an existing chart
         uses: ./
         with:
           auth_token: ${{ secrets.PAT }}
-          fork_name: deweya/helm-charts
-          upstream_owner: deweya0
+          chart_repo: deweya0/helm-charts
           committer_email: deweya964@gmail.com
           local_charts_dir: test/02-test-removing-file-from-existing-chart
       - name: Verify simple change to existing chart (nginx)
-        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 02-pr-diff.txt
+        run: test/verify-pr.sh deweya0/helm-charts master feat/sync ${{ secrets.PAT }} 02-pr-diff.txt
 
       ## Test adding a new chart
       - name: Test adding a new chart
         uses: ./
         with:
           auth_token: ${{ secrets.PAT }}
-          fork_name: deweya/helm-charts
-          upstream_owner: deweya0
+          chart_repo: deweya0/helm-charts
           committer_email: deweya964@gmail.com
           local_charts_dir: test/03-test-adding-new-chart
       - name: Verify adding a new chart (new-chart)
-        run: test/verify-pr.sh master deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
+        run: test/verify-pr.sh deweya0/helm-charts master feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
 
-      ## Test adding a new chart using a different target branch
-      - name: Test adding a new chart using a different target branch
+      ## Test adding a new chart using a different BASE_BRANCH
+      - name: Test adding a new chart using a different BASE_BRANCH
         uses: ./
         with:
           auth_token: ${{ secrets.PAT }}
-          fork_name: deweya/helm-charts
-          upstream_owner: deweya0
+          chart_repo: deweya0/helm-charts
           committer_email: deweya964@gmail.com
           local_charts_dir: test/03-test-adding-new-chart
-          target_branch: test-target-branch
-      - name: Verify adding a new chart using a different target branch
-        run: test/verify-pr.sh test-target-branch deweya0/helm-charts deweya:feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
+          base_branch: test-target-branch
+      - name: Verify adding a new chart using a different BASE_BRANCH
+        run: test/verify-pr.sh deweya0/helm-charts test-target-branch feat/sync ${{ secrets.PAT }} 03-pr-diff.txt
+
+      ## Test 01-test-change-to-existing-chart using a fork
+      - name: Test a change to an existing chart using a fork
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          chart_repo: deweya0/helm-charts
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/01-test-change-to-existing-chart
+          fork_owner: deweya
+      - name: Verify simple change to existing chart (nginx)
+        run: test/verify-pr.sh deweya0/helm-charts master deweya:feat/sync ${{ secrets.PAT }} 01-pr-diff.txt
+
+      ## Test 02-test-removing-file-from-existing-chart using a fork
+      - name: Test removing a file from an existing chart using a fork
+        uses: ./
+        with:
+          auth_token: ${{ secrets.PAT }}
+          chart_repo: deweya0/helm-charts
+          committer_email: deweya964@gmail.com
+          local_charts_dir: test/02-test-removing-file-from-existing-chart
+          fork_owner: deweya
+      - name: Verify removing a file from an existing chart using a fork
+        run: test/verify-pr.sh deweya0/helm-charts master deweya:feat/sync ${{ secrets.PAT }} 02-pr-diff.txt
+        

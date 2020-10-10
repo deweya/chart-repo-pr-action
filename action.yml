@@ -9,14 +9,14 @@ runs:
   image: 'Dockerfile'
 inputs:
   auth_token:
-    description: Token used for authentication to push to fork
+    description: Token used for authentication
     required: true
-  fork_name:
-    description: "Name of your Helm charts fork (ex: deweya/helm-charts)"
+  chart_repo:
+    description: "The chart repository that you want to publish your charts to (ex: redhat-cop/helm-charts)"
     required: true
-  upstream_owner:
-    description: "Owner of the upstream Helm charts repo (ex: redhat-cop)"
-    required: true
+  fork_owner:
+    description: "The owner of the chart repo fork. If blank, this Action assumes that you are publishing to a chart repo with the same org as your local repository."
+    required: false
   auth_user:
     description: Username used for authentication to push to fork. If blank, defaults to the user who triggered the action.
     required: false
@@ -28,6 +28,14 @@ inputs:
     description: Charts directory name in upstream repo
     required: false
     default: charts
+  head_branch:
+    description: New or existing branch the action should use as the PR head branch
+    required: false
+    default: feat/sync
+  base_branch:
+    description: Existing chart repo branch that the action should use as the PR base branch
+    required: false
+    default: master
   committer_name:
     description: The GitHub username to use as the committer name. If blank, defaults to the user who triggered the action.
     required: false
@@ -39,11 +47,3 @@ inputs:
     description: Commit message to use when pushing to fork
     required: false
     default: Syncing local charts with upstream chart repo
-  source_branch:
-    description: New or existing branch the action should use as the source branch for the PR
-    required: false
-    default: feat/sync
-  target_branch:
-    description: Branch that the PR should target
-    required: false
-    default: master
