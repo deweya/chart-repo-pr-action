@@ -7,7 +7,7 @@ export AUTH_USER=${INPUT_AUTH_USER:-$GITHUB_ACTOR}
 export CHART_REPO=$INPUT_CHART_REPO
 export FORK_OWNER=$INPUT_FORK_OWNER
 export LOCAL_CHARTS_DIR=$INPUT_LOCAL_CHARTS_DIR
-export UPSTREAM_CHARTS_DIR=$INPUT_UPSTREAM_CHARTS_DIR
+export CENTRAL_CHARTS_DIR=$INPUT_CENTRAL_CHARTS_DIR
 export COMMITTER_NAME=${INPUT_COMMITTER_NAME:-$GITHUB_ACTOR}
 export COMMITTER_EMAIL=$INPUT_COMMITTER_EMAIL
 export COMMIT_MESSAGE=$INPUT_COMMIT_MESSAGE
@@ -36,16 +36,16 @@ git config user.email $COMMITTER_EMAIL
 
 ## Reset the HEAD_BRANCH to BASE_BRANCH
 git checkout $HEAD_BRANCH || git checkout -b $HEAD_BRANCH
-git remote add upstream https://github.com/$CHART_REPO
-git fetch upstream
-git reset --hard upstream/$BASE_BRANCH
+git remote add central https://github.com/$CHART_REPO
+git fetch central
+git reset --hard central/$BASE_BRANCH
 
 ## For each chart in the HEAD_BRANCH, remove that chart and then copy it back over
 ## This essentially cleans the HEAD_BRANCH before trying to create/update the PR
 cd $GITHUB_WORKSPACE/$LOCAL_CHARTS_DIR
 for chart in */; do
-  rm -rfv $repo_dir/$UPSTREAM_CHARTS_DIR/$chart
-  cp -rv $chart $repo_dir/$UPSTREAM_CHARTS_DIR/
+  rm -rfv $repo_dir/$CENTRAL_CHARTS_DIR/$chart
+  cp -rv $chart $repo_dir/$CENTRAL_CHARTS_DIR/
 done
 
 ## Add, Commit, and Push

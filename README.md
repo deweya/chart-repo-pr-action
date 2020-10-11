@@ -6,10 +6,10 @@ This action is used to copy Helm charts to a central Helm chart repository by au
 ## Who Is This Action For?
 You might be interested in this Action if you:
 * Maintain at least one Helm chart in your own git repository
-* Would like to publish your chart(s) to an upstream chart repository
+* Would like to publish your chart(s) to a central chart repository
 * Would _not_ like to move your Helm charts out of your repository
 
-This action allows you to sync Helm charts you maintain in your own repository to an upstream chart repository without requiring you to move or copy your Helm charts manually. It does this by making a PR to the chart repository in an automated and idempotent fashion.
+This action allows you to sync Helm charts you maintain in your own repository to a central chart repository without requiring you to move or copy your Helm charts manually. It does this by making a PR to the chart repository in an automated and idempotent fashion.
 
 Interested? Read on to learn how to use this Action.
 
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: deweya/chart-repo-pr-action@master
+      - uses: deweya/chart-repo-pr-action@v0.2.0
         with:
           auth_token: ${{ secrets.PAT }}
           chart_repo: deweya0/helm-charts
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: deweya/chart-repo-pr-action@master
+      - uses: deweya/chart-repo-pr-action@v0.2.0
         with:
           auth_token: ${{ secrets.PAT }}
           chart_repo: deweya0/helm-charts
@@ -70,16 +70,16 @@ See the next section for additional parameters.
 | Parameter | Description | Default | Required? |
 | --------- | ----------- | ------- | --------- |
 | `auth_token` | Token used for authentication to push | - | true |
-| `chart_repo` | The chart repository that you want to publish your charts to (ex: deweya0/helm-charts) | - | true |
+| `chart_repo` | The central chart repository that you want to publish your charts to (ex: deweya0/helm-charts) | - | true |
 | `fork_owner` | The owner of the chart repo fork (ex: deweya). If blank, this Action assumes that you are publishing to a chart repo with the same org as your local repository. | - | false |
 | `auth_user` | Username used for authentication to push. | Defaults to the user who triggered the action | false |
 | `local_charts_dir` | Charts directory name in local repo | `charts` | false |
-| `upstream_charts_dir` | Charts directory name in upstream repo | `charts` | false |
+| `central_charts_dir` | Charts directory name in central repo | `charts` | false |
 | `head_branch` | New or existing branch the action should use as the PR head branch | `feat/sync` | false |
 | `base_branch` | Existing chart repo branch that the action should use as the PR base branch | `master` | false |
 | `committer_name` | The GitHub username to use as the committer name. | Default to the user who triggered the action | false |
 | `committer_email` | The email to use as the committer email | `<>` | false |
-| `commit_message` | Commit message to use for push | `Syncing local charts with upstream chart repo` | false |
+| `commit_message` | Commit message to use for push | `Syncing local charts with central chart repo` | false |
 
 ### The `auth_token` Parameter
 This parameter requires special attention. It is used to authenticate so that the action can push.
@@ -102,4 +102,4 @@ Of course, be sure to use a different name other than `PAT` if you gave your sec
 ### The `head_branch` Parameter
 One important thing to call out about the `head_branch` parameter is that this action will make a **force push** against this branch. As a result, it is highly recommended that you select a dedicated `head_branch` for this action or use the default `feat/sync` branch. If you attempt to make changes to `head_branch`, they may be wiped out when this action runs.
 
-The force push is necessary because this action synchronizes your `head_branch` with the upstream's `base_branch` in order to produce an accurate diff. Since it is possible that this will rewrite `head_branch`'s history, this action performs a force push.
+The force push is necessary because this action synchronizes your `head_branch` with the central chart repo's `base_branch` in order to produce an accurate diff. Since it is possible that this will rewrite `head_branch`'s history, this action performs a force push.
